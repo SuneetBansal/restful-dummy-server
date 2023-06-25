@@ -8,32 +8,40 @@ npm install -g restful-dummy-server
 ### CLI options
 
 #### 1. port
+```js
 "scripts": {
     "start": "restful-dummy-server -port 4000"
 }
+```
 
 This will start restful dummy server on port 4000
 
 
 #### 2. host
 You can also mention host.
+```js
 "scripts": {
     "start": "restful-dummy-server -port 4000 -host xx.xx.xx.xx"
 }
+```
 
 #### 3. static
+```js
 "scripts": {
     "start": "restful-dummy-server -port 4000 -static ./data"
 }
+```
 
 **static** is used to know the relative path of a folder where all statics files are hosted. Which then would be used by Dummy server to download files against the rest api dowbloaded request.
 Here this folder is **data**.
 
 
 #### 4. config
+```js
 "scripts": {
     "start": "restful-dummy-server -port 4000 -static ./data -config ./test"
 }
+```
 
 **config** is used to know the relative path of a folder which are having dummy request response instruction files in **.json** extensions only.
 
@@ -44,6 +52,7 @@ Note -
 Example 1-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/message",
@@ -54,6 +63,7 @@ Example 1-
         "body": "Hello Dummy Server"
     }
 }]
+```
 
 In this case if you hit http://localhost:5000/get/message then you will get **Hello Dummy Server** as response.
 
@@ -61,6 +71,7 @@ In this case if you hit http://localhost:5000/get/message then you will get **He
 Example 2-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/:message",
@@ -71,6 +82,7 @@ Example 2-
         "body": { "message": "Hello Dummy Server" }
     }
 }]
+```
 
 In this case if you hit http://localhost:5000/get/test or http://localhost:5000/get/msg etc. then you will get **{ "message": "Hello Dummy Server" }** as response.
 
@@ -78,6 +90,7 @@ In this case if you hit http://localhost:5000/get/test or http://localhost:5000/
 Example 3-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/png/*.*",
@@ -90,6 +103,7 @@ Example 3-
         "body": "./test.png"
     }
 }]
+```
 
 In this case if you hit http://localhost:5000/get/png/abc.png or http://localhost:5000/get/png/msg.png etc. then **test.png** will be downloaded as response.
 
@@ -97,6 +111,7 @@ In this case if you hit http://localhost:5000/get/png/abc.png or http://localhos
 Example 4-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/**/*.*",
@@ -109,6 +124,7 @@ Example 4-
         "body": "./test.png"
     }
 }]
+```
 
 In this case if you hit http://localhost:5000/get/png/abc.png or http://localhost:5000/get/png/png2/msg.jpeg etc. then **test.png** will be downloaded as response.
 
@@ -116,6 +132,7 @@ In this case if you hit http://localhost:5000/get/png/abc.png or http://localhos
 Example 5-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/**/*.png",
@@ -128,6 +145,7 @@ Example 5-
         "body": "./test.png"
     }
 }]
+```
 
 In this case if you hit http://localhost:5000/get/png/abc.png or http://localhost:5000/get/png/png2/msg.png etc. then **test.png** will be downloaded as response.
 
@@ -135,6 +153,7 @@ In this case if you hit http://localhost:5000/get/png/abc.png or http://localhos
 Example 6-
 **test/config.json**
 
+```js
 [{
     "request": {
         "url": "/get/**/*.png",
@@ -148,14 +167,17 @@ Example 6-
         "delay": 2000 
     }
 }]
+```
 
 Above **delay** is the special attribute which would cause Dummy server to respond in 2000 milliseconds.
 
 
 #### 5. proxy
+```js
 "scripts": {
     "start": "restful-dummy-server -port 4000 -static ./data -config ./test -proxy localhost:2000"
 }
+```
 
 If **proxy** is provided then Dummy server will redirect the request to the proxy server if there is no matching record found.
 
