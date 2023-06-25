@@ -1,6 +1,6 @@
 {
   "name": "restful-dummy-server",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "This can be used to mock restful api responses.",
   "main": "dist/index.js",
   "scripts": {
