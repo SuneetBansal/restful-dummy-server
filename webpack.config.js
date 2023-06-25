@@ -1,6 +1,7 @@
 // lib imports
 const path = require('path');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {  
     mode: 'production',
@@ -20,5 +21,13 @@ module.exports = {
     },
     plugins: [
         new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
-    ]
+    ],
+    optimization: {
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            extractComments: /@extract/i,
+          }),
+        ],
+    }
 };
