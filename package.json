@@ -1,14 +1,15 @@
 {
   "name": "restful-dummy-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This can be used to mock restful api responses.",
-  "main": "dist/bundle.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && webpack",
+    "build": "rm -rf dist && cpx \"src/*\" dist",
+    "postbuild": "rm -rf src",
     "publish:package": "npm run build && npm publish --access=public"
   },
   "bin": {
-    "restful-dummy-server": "dist/bundle.js"
+    "restful-dummy-server": "dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -33,9 +34,7 @@
     "express-http-proxy": "^1.6.3"
   },
   "devDependencies": {
-    "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^5.3.9",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "cpx": "^1.5.0",
+    "rimraf": "^3.0.2"
   }
 }
