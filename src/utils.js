@@ -53,6 +53,40 @@ function getItem(req, filePath) {
    return mockData?.find((item) => (isMatchingPathExists(req, item)));
 }
 
+// Below cases supporting - 
+// 1. url: /test/:input will match with /test/abc or /test/xyz etc.
+// 2. url: /test/*.* will match with /test/abc.jpg or /test/xyz.png etc.
+// 3. url: /test/**/*.jpg will match with /test/abc.jpg or /test/xyz/abc.jpg or /test/test2/xyg.jpg etc.
+// 4. url: /test/**/*.* will match with /test/test2/xyz.jpg or /test/test2/test3/xyz.png etc.
+function buildMockPathRegex(mockPath) {
+  if (!mockPath || typeof mockPath !== 'string') {
+    throw new Error('mockPath must be a non-empty string');
+  }
+
+  // 1) Escape literal '.' and '/'
+  let pattern = mockPath
+    .replace(/\//g, '\\/')
+    .replace(/\./g, '\\.');
+
+  // 2) Handle double-star first (deep wildcard)
+  //    - matches across '/' as well
+  pattern = pattern.replace(/\*\*(?!\*)/g, '[\\w./-]+');
+
+  // 3) Handle single star (single segment wildcard)
+  pattern = pattern.replace(/\*(?!\*)/g, '[\\w.-]+');
+
+  // 4) Special :list placeholder -> comma-separated list of tokens
+  //    Example: :list -> SRDSS,ERTT,SAA,SSSS
+  pattern = pattern.replace(/:list\b/g, '[\\w.-]+(?:,[\\w.-]+)*');
+
+  // 5) Other named params like :id, :type etc. -> single token
+  pattern = pattern.replace(/:[\w.-]+\b/g, '[\\w.-]+');
+
+  // 6) Anchor the pattern
+  return new RegExp('^' + pattern + '$');
+}
+
+
 /**
  * To check if req path exists on mock data
  */
@@ -63,18 +97,7 @@ function isMatchingPathExists(req, mockData) {
     // removing starting and trailing /
     path = path.replace(/^\//, '').replace(/\/$/, '');
     mockPath = mockPath.replace(/^\//, '').replace(/\/$/, '');  
-
-    // Below cases supporting - 
-    // 1. url: /test/:input will match with /test/abc or /test/xyz etc.
-    // 2. url: /test/*.* will match with /test/abc.jpg or /test/xyz.png etc.
-    // 3. url: /test/**/*.jpg will match with /test/abc.jpg or /test/xyz/abc.jpg or /test/test2/xyg.jpg etc.
-    // 4. url: /test/**/*.* will match with /test/test2/xyz.jpg or /test/test2/test3/xyz.png etc.
-    const regexForMockPath = mockPath?.replace(/\//g, '\\/')
-                                .replace(/\./g, '\\.')         
-                                .replace(/\*{2,}/g, '[\\w-\.\/]\+')         
-                                .replace(/\*/g, '[\\w-]\+')            
-                                .replace(/:[\w-\.]+/g, '[\\w-\.]\+');
-    const regexEval = eval('/^' + regexForMockPath + '$/'); ; 
+    const regexEval = buildMockPathRegex(mockPath);
 
     if (reqMethod?.toLowerCase() !== mockMethod?.toLowerCase()) {
         return false;
